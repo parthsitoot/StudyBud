@@ -7,23 +7,17 @@
 <div>
     <div>
         <a href="{% url 'create-room' %}">
-            <h3>
-                <button>
-                    <h3>Create Room
-                        </h3>
-                    </button>
-            </h3>
+            <h3><button><h3>Create Room</h3></button></h3>
         </a>
     </div>
+
     <div>
         {% for room in rooms %}
             <div>
+                <a href="{% url 'update-room' room.id %}">Edit</a>
+                <a href="{% url 'delete-room' room.id %}">Delete</a>
                 <span>@{{room.host.username}}</span>
-                <h3>
-                    <a href="{% url 'room' room.id %}">
-                        {{room}}
-                    </a>
-                </h3>
+                <h3><a href="{% url 'room' room.id %}">{{room}}</a> </h3>
                 <small>Topic: {{room.topic.name}}</small>
                 <hr>
             </div>
