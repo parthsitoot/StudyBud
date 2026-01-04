@@ -23,8 +23,10 @@ def home(request):
         Q(topic__name__icontains=q) | 
         Q(name__icontains=q) |
         Q(description__icontains=q))
+    
+    room_count = rooms.count()
 
-    context = {'rooms': rooms, 'topics': topics}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count}
     return render(request, 'base/home.html', context)
 
 def createRoom(request):
