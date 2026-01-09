@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from .forms import RoomForm, TopicForm
 from django.contrib import messages
 from django.http import HttpResponse
 
 # Create your views here.
 def loginPage(request):
+    page = 'login'
     
     if request.user.is_authenticated:
         return redirect('home')
@@ -24,17 +26,37 @@ def loginPage(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            user.username = user.username.lower()
             login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'Username Or Password does not exists')
-    context = {}
+    context = {'page' : page}
     return render(request, 'base/login_register.html', context)
 
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
+def registerUser(request):
+    form = UserCreationForm()
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        print(form)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'An error occurred during registration')
+            
+    context = {'form' : form}
+    return render(request, 'base/login_register.html', context)
+
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
