@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -60,8 +60,15 @@ def registerUser(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-
-    context = {'room': room}
+    if request.method == "POST" :
+        message = Message.objects.create(
+            user = request.user,
+            room = room,
+            body = request.POST.get('body')
+        )
+        return redirect('room', pk=room.id)
+    conversation = room.message_set.all().order_by("-created")
+    context = {'room': room, 'conversation' : conversation}
     return render(request, 'base/room.html', context)
 
 def home(request):
@@ -124,4 +131,3 @@ def deleteRoom(request, pk):
         room.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': room})
-

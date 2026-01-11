@@ -9,6 +9,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+Audio_Files/
 .Python
 build/
 develop-eggs/
