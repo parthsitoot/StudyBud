@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RoomForm, TopicForm
 from django.contrib import messages
+from django.http import HttpResponse
 
 # Create your views here.
 def loginPage(request):
@@ -124,10 +125,23 @@ def updateRoom(request, pk):
     context = {'form' : form}
     return render(request, 'base/room_form.html', context)
 
-
+@login_required(login_url='login')
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
     if request.method == 'POST':
         room.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': room})
+
+@login_required(login_url='login')
+def deleteMessage(request, pk):
+    convo = Message.objects.get(id=pk)
+    if request.user != convo.user:
+        return HttpResponse('You are not the owner of this message')
+
+    if request.method == 'POST':
+        convo.delete()
+        return redirect('home')
+
+    return render(request, 'base/delete.html', {'obj': convo})
+

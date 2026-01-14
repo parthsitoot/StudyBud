@@ -19,11 +19,14 @@
             <hr>
             {% for convo in conversation %}
             <div>
+                {% if request.user == convo.user %}
+                <a href="{% url 'delete-message' convo.id %}">Delete</a>
+                {% endif %}
                 <small>@{{convo.user}} {{convo.created | timesince}} ago </small>
                 <li>{{convo.body}}</li>
                 <hr>
 
-            </div>    
+            </div>
             {% endfor %}
         </div>
 
