@@ -34,7 +34,7 @@ def loginPage(request):
     context = {'page' : page}
     return render(request, 'base/login_register.html', context)
 
-
+@login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     return redirect('home')
@@ -66,7 +66,9 @@ def room(request, pk):
             room = room,
             body = request.POST.get('body')
         )
+        
         return redirect('room', pk=room.id)
+    
     conversation = room.message_set.all().order_by("-updated")
     participants = room.participants.all()
     context = {'room': room, 'conversation' : conversation, 'participants' : participants}
@@ -81,8 +83,10 @@ def home(request):
         Q(description__icontains=q))
     
     room_count = rooms.count()
+    activities = Message.objects.all().order_by('-updated')[:5]
 
-    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count}
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count,
+               'activities': activities}
     return render(request, 'base/home.html', context)
 
 @login_required(login_url='login')

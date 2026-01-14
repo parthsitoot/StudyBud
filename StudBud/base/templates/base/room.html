@@ -20,7 +20,8 @@
             {% for convo in conversation %}
             <div>
                 {% if request.user == convo.user %}
-                <button><a href="{% url 'delete-message' convo.id %}">Delete </a></button> <button><a href="{% url 'update-message' convo.id %}">Update</a></button>
+                <button><a href="{% url 'delete-message' convo.id %}">Delete </a></button> 
+                <button><a href="{% url 'update-message' convo.id %}">Update</a></button>
                 {% endif %}
                 <small>@{{convo.user}} {{convo.updated | timesince}} ago </small>
                 <li>{{convo.body}}</li>

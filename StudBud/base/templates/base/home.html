@@ -13,7 +13,8 @@
     <style>
         .home-container {
             display : grid;
-            grid-template-columns: 1fr 3fr;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
         }
     </style>
 
@@ -48,6 +49,18 @@
                     <h3><a href="{% url 'room' room.id %}">{{room}}</a> </h3>
                     <small>Topic: {{room.topic.name}}</small>
                     <hr>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <h3>Recent Activities</h3>
+            <hr>
+            {% for activity in activities %}
+                <div>
+                    <li><small>{{activity.user}}: {{activity.updated | timesince}}</small></li>
+                    <small>Replied to: {{activity.room}}</small>
+                    <p>{{activity.body}}</p>
                 </div>
             {% endfor %}
         </div>
