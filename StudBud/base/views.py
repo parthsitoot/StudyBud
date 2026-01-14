@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RoomForm, TopicForm
 from django.contrib import messages
-from django.http import HttpResponse
 
 # Create your views here.
 def loginPage(request):
@@ -68,7 +67,8 @@ def room(request, pk):
         )
         return redirect('room', pk=room.id)
     conversation = room.message_set.all().order_by("-created")
-    context = {'room': room, 'conversation' : conversation}
+    participants = room.participants.all()
+    context = {'room': room, 'conversation' : conversation, 'participants' : participants}
     return render(request, 'base/room.html', context)
 
 def home(request):
