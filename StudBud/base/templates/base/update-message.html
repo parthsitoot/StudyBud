@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudBud</title>
+</head>
+<body>
+</body>
+    {% include 'main.html' %}
+    {% block content %}
+    <div>
+        <h2>Update Message</h2>
+        <form method = "POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="text" name="body" placeholder="message" value="{{obj.body}}" />
+            <input type="submit" value="Update Message" />
+        </form>
+    </div>
+    {% endblock %}
+</html>

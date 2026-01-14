@@ -20,9 +20,9 @@
             {% for convo in conversation %}
             <div>
                 {% if request.user == convo.user %}
-                <a href="{% url 'delete-message' convo.id %}">Delete</a>
+                <button><a href="{% url 'delete-message' convo.id %}">Delete </a></button> <button><a href="{% url 'update-message' convo.id %}">Update</a></button>
                 {% endif %}
-                <small>@{{convo.user}} {{convo.created | timesince}} ago </small>
+                <small>@{{convo.user}} {{convo.updated | timesince}} ago </small>
                 <li>{{convo.body}}</li>
                 <hr>
 
@@ -35,6 +35,7 @@
             <form method = "POST" action="">
                 {% csrf_token %}
                 <input type="text" name="body" placeholder="Write your message here..." /> 
+                <input type="submit" value="Send" />
             </form>
         </div>
     </div>

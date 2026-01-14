@@ -67,7 +67,7 @@ def room(request, pk):
             body = request.POST.get('body')
         )
         return redirect('room', pk=room.id)
-    conversation = room.message_set.all().order_by("-created")
+    conversation = room.message_set.all().order_by("-updated")
     participants = room.participants.all()
     context = {'room': room, 'conversation' : conversation, 'participants' : participants}
     return render(request, 'base/room.html', context)
@@ -145,3 +145,13 @@ def deleteMessage(request, pk):
 
     return render(request, 'base/delete.html', {'obj': convo})
 
+def updateMessage(request, pk):
+    convo = Message.objects.get(id=pk)
+    if request.user != convo.user:
+        return HttpResponse('You are not the owner of this message')
+
+    if request.method == 'POST':
+        convo.body = request.POST.get('body')
+        convo.save()
+        return redirect('home')
+    return render(request, 'base/update-message.html', {'obj': convo})
