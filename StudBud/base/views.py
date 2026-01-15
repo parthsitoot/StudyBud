@@ -83,7 +83,9 @@ def home(request):
         Q(description__icontains=q))
     
     room_count = rooms.count()
-    activities = Message.objects.all().order_by('-updated')[:5]
+    activities = Message.objects.filter(
+        Q(room__topic__name__icontains=q) |
+        Q(room__name__icontains=q)).order_by('-updated')
 
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count,
                'activities': activities}
@@ -159,3 +161,9 @@ def updateMessage(request, pk):
         convo.save()
         return redirect('home')
     return render(request, 'base/update-message.html', {'obj': convo})
+
+
+@login_required(login_url='login')
+def userProfile(request, pk):
+    context = {'user': request.user}
+    return render(request, 'base/profile.html', context)

@@ -1,15 +1,129 @@
-<a href="/">
-    <h1>LOGO</h1>
-</a>
+<style>
+    .header-nav {
+        background: var(--card-bg);
+        height: var(--header-height);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: var(--shadow-sm);
+        z-index: 999;
+        
+        /* Animation */
+        animation: slideDown 0.6s ease forwards;
+    }
 
-<form method="GET" action="{% url 'home' %}">
-    <input type="text" name="q" placeholder="Search Room..." />
-</form>
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+    }
 
-{% if request.user.is_authenticated %}
-   <li> <p>Hello {{request.user}}</li>
-    <a href="{% url 'logout' %}">Logout</a>
-{% else %}
-    <a href="{% url 'login' %}">Login</a>
-{% endif %}
-<hr>
+    /* Logo */
+    .logo h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        letter-spacing: -1px;
+    }
+
+    /* Search Bar */
+    .header-search form {
+        position: relative;
+    }
+
+    .header-search input[type="text"] {
+        padding: 10px 20px;
+        border-radius: 50px; /* Pill shape */
+        border: 1px solid var(--border-color);
+        background: var(--bg-color);
+        width: 300px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .header-search input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        width: 320px; /* Slight expansion on focus */
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    }
+
+    /* User Actions */
+    .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .user-greeting {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .btn-login, .btn-logout {
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-login {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-login:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-logout {
+        color: var(--text-light);
+    }
+
+    .btn-logout:hover {
+        color: var(--text-dark);
+        text-decoration: underline;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-100%); }
+        to { transform: translateY(0); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .header-search input[type="text"] { width: 150px; }
+        .user-greeting { display: none; } /* Hide name on small screens */
+    }
+</style>
+
+<header class="header-nav">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <h1>StudyBud</h1>
+        </a>
+
+        <div class="header-search">
+            <form method="GET" action="{% url 'home' %}">
+                <input type="text" name="q" placeholder="Search Rooms..." autocomplete="off"/>
+            </form>
+        </div>
+
+        <div class="user-actions">
+            {% if request.user.is_authenticated %}
+                <span class="user-greeting">Hello, {{request.user.username}}</span>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-login">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
