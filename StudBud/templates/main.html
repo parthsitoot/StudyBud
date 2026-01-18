@@ -1,88 +1,24 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBud</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- GLOBAL VARIABLES --- */
-        :root {
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --primary-color: #6c5ce7;
-            --primary-hover: #5b4cc4;
-            --text-dark: #2d3436;
-            --text-light: #636e72;
-            --border-color: #dfe6e9;
-            --alert-bg: #ffeaa7;
-            --alert-text: #d63031;
-            --radius: 12px;
-            --shadow-sm: 0 2px 5px rgba(0,0,0,0.05);
-            --header-height: 70px;
-        }
-
-        /* --- GLOBAL RESET --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            padding-top: var(--header-height); /* Space for fixed navbar */
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* --- DJANGO MESSAGES (TOAST STYLING) --- */
-        .messages {
-            list-style: none;
-            position: fixed;
-            top: 90px;
-            right: 20px;
-            z-index: 1000;
-            width: 300px;
-        }
-
-        .messages li {
-            background: var(--card-bg);
-            border-left: 5px solid var(--primary-color);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            animation: slideInRight 0.5s ease forwards;
-        }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-    </style>
-</head>
-<body>
-    
-    {% include 'navbar.html' %}
-
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% block content %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>StudBud</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css' %}">
+    </head>
+    <body>
+        {% include 'navbar.html' %}
+        {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}
+            
         {% endblock %}
 
 </body>

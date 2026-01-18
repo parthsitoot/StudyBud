@@ -34,15 +34,7 @@
         </div>
 
         <div>
-            <h3>Recent Activities</h3>
-            <hr>
-            {% for activity in activities %}
-                <div>
-                    <li><small>{{activity.user}}: {{activity.updated | timesince}}</small></li>
-                    <small>Replied to: {{activity.room}}</small>
-                    <p>{{activity.body}}</p>
-                </div>
-            {% endfor %}
+            {% include 'base/recent_activities.html' %}
         </div>
     </div>
     {% endblock %}

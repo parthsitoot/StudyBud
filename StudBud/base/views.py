@@ -163,7 +163,10 @@ def updateMessage(request, pk):
     return render(request, 'base/update-message.html', {'obj': convo})
 
 
-@login_required(login_url='login')
 def userProfile(request, pk):
-    context = {'user': request.user}
+    user = User.objects.get(id=pk)
+    rooms = user.room_set.all()
+    topics = Topic.objects.all()
+    activities = Message.objects.filter(user=user).order_by('-updated')
+    context = {'user' : user, 'rooms': rooms, 'topics': topics, 'activities': activities}
     return render(request, 'base/profile.html', context)
