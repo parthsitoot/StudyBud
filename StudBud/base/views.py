@@ -1,25 +1,25 @@
 from django.shortcuts import redirect, render
 from .models import Room, Topic, Message
-from django.contrib.auth.models import User
+from .models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from .forms import RoomForm, TopicForm
+from .forms import RoomForm, TopicForm, UserCreationForm
 from django.contrib import messages
 from django.http import HttpResponse
 
 # Create your views here.
 def loginPage(request):
     page = 'login'
-    
     if request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':
+        print(request.POST)
         username = request.POST.get('username')
         password = request.POST.get('password')
         try:
             user = User.objects.get(username=username)
+            print(user)
         except:
             messages.error(request, 'User does not exits')
             
@@ -40,21 +40,29 @@ def logoutUser(request):
     return redirect('home')
 
 def registerUser(request):
-    form = UserCreationForm()
+    form = UserCreationForm() 
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        print(form)
+        form = UserCreationForm(request.POST, request.FILES)
         if form.is_valid():
+            # 1. Create the user instance but DO NOT save to DB yet
             user = form.save(commit=False)
+            
+            # 2. Convert username to lowercase (optional but good practice)
             user.username = user.username.lower()
+            
+            # 3. Hash the password! This encrypts "" -> "pbkdf2_sha256..."
+            user.set_password(user.password)
+            
+            # 4. Now save the final object to the database
             user.save()
+            
             login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'An error occurred during registration')
-            
-    context = {'form' : form}
+
+    context = {'form': form}
     return render(request, 'base/login_register.html', context)
 
 
@@ -97,6 +105,7 @@ def createRoom(request):
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
+            form.instance.host = request.user
             form.save()
             return redirect('home')
     
@@ -170,3 +179,10 @@ def userProfile(request, pk):
     activities = Message.objects.filter(user=user).order_by('-updated')
     context = {'user' : user, 'rooms': rooms, 'topics': topics, 'activities': activities}
     return render(request, 'base/profile.html', context)
+
+def addTopic(request):
+    if request.method == 'POST':
+        topic_name = request.POST.get('name')
+        Topic.objects.create(name=topic_name)
+        return redirect('home')
+    return render(request, 'base/topic_form.html')

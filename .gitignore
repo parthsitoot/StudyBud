@@ -9,6 +9,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+images/
 Audio_Files/
 .Python
 build/

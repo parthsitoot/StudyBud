@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+# Create your models here.
 
 class Topic(models.Model):
     name = models.CharField(max_length=200)
@@ -7,7 +9,14 @@ class Topic(models.Model):
     def __str__(self):
         return self.name
     
-# Create your models here.
+
+class User(AbstractUser):
+    name = models.CharField(max_length=50, null=True)
+    email = models.EmailField(unique=True, null=True)
+    bio = models.TextField(null=True)
+    avatar = models.ImageField(null=True, default="avatar.svg")
+    
+    
 class Room(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null = True)
