@@ -1,11 +1,18 @@
-<h3>Browse Topics</h3><a href="{% url 'create-topic' %}"><button>Create Topic</button></a>
-<hr>
-<div>
-    <a href="{% url 'home' %}">All</a>
+<div class="topics-header">
+    <h3 style="margin: 0;">Browse Topics</h3>
+    <a href="{% url 'create-topic' %}" style="font-size: 0.8rem; color: var(--accent);">
+        + Create
+    </a>
 </div>
-{% for topic in topics %}
-    <div>
-        <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-        
-    </div>
-{% endfor %}
+
+<div class="topic-list">
+    <a href="{% url 'home' %}" class="{% if not request.GET.q %}active{% endif %}">
+        All
+    </a>
+    
+    {% for topic in topics %}
+    <a href="{% url 'home' %}?q={{topic.name}}" class="{% if request.GET.q == topic.name %}active{% endif %}">
+        {{topic.name}}
+    </a>
+    {% endfor %}
+</div>

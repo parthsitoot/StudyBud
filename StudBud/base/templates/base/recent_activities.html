@@ -1,11 +1,17 @@
-<div>
-    <h3>Recent Activities</h3>
-    <hr>
+<div class="card" style="background: var(--bg-color); border: none; padding: 1.5rem 0;">
+    <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Recent Activities</h3>
+    
     {% for activity in activities %}
-        <div>
-            <li><small><a href="{% url 'user-profile' activity.user.id %}">{{activity.user}}</a>: {{activity.updated | timesince}}</small></li>
-            <small>Replied to: {{activity.room}}</small>
-            <p>{{activity.body}}</p>
+        <div class="activity-item">
+            <div style="margin-bottom: 0.5rem; font-size: 0.85rem;">
+                <a href="{% url 'user-profile' activity.user.id %}" style="font-weight: 600; color: var(--accent);">@{{activity.user}}</a>
+                <span style="color: var(--text-muted);">• {{activity.created|timesince}} ago</span>
+            </div>
+            
+            <div style="background: var(--card-bg); padding: 0.8rem; border-radius: var(--radius); border: 1px solid var(--border);">
+                <small style="color: var(--text-muted); display: block; margin-bottom: 5px;">Replied to: "{{activity.room}}"</small>
+                <p style="font-size: 0.95rem;">{{activity.body}}</p>
+            </div>
         </div>
     {% endfor %}
 </div>

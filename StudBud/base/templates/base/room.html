@@ -1,55 +1,61 @@
 {% extends 'main.html' %}
 {% block content %}
 
-<style>
-    .room-container {
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-    }
-</style>
-
 <div class="room-container">
-    <div>
-        <h1>
-            {{ room.name }}
-        </h1>
-        <p>Descrition: {{room.description}}</p>
-        <div class="comment-wrapper">
-            <h3>Conversation</h3>
-            <hr>
-            {% for convo in conversation %}
-            <div>
-                {% if request.user == convo.user %}
-                <button><a href="{% url 'delete-message' convo.id %}">Delete </a></button> 
-                <button><a href="{% url 'update-message' convo.id %}">Update</a></button>
-                {% endif %}
-                <small>@{{convo.user}} {{convo.updated | timesince}} ago </small>
-                <li>{{convo.body}}</li>
-                <hr>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <h1>{{ room.name }}</h1>
+            <span class="topic-tag">{{room.topic.name}}</span>
+        </div>
+        
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">{{room.description}}</p>
 
+        <div class="comment-wrapper">
+            {% for convo in conversation %}
+            <div class="message-bubble">
+                <div class="message-header">
+                    <div>
+                        <a href="{% url 'user-profile' convo.user.id %}"><strong>@{{convo.user}}</strong></a>
+                        <span style="color: var(--text-muted); margin-left: 5px;">{{convo.updated | timesince}} ago</span>
+                    </div>
+                    
+                    {% if request.user == convo.user %}
+                    <div>
+                        <a href="{% url 'update-message' convo.id %}" style="margin-right: 8px; font-size: 0.8rem;">Edit</a>
+                        <a href="{% url 'delete-message' convo.id %}" style="color: #ef4444; font-size: 0.8rem;">&times;</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <p>{{convo.body}}</p>
             </div>
             {% endfor %}
         </div>
 
         {% if request.user.is_authenticated %}
-        <div class = "comment-form">
-            <form method = "POST" action="">
+        <div style="margin-top: 1.5rem;">
+            <form method="POST" action="">
                 {% csrf_token %}
-                <input type="text" name="body" placeholder="Write your message here..." /> 
-                <input type="submit" value="Send" />
+                <input type="text" name="body" placeholder="Write your message here..." required style="margin-bottom: 0.5rem;" />
+                <input type="submit" value="Send Message" class="btn" />
             </form>
         </div>
+        {% endif %}
     </div>
 
     <div>
-        <h3>Participants</h3>
-        <hr>
-        {% for participant in participants %}
-
-        <li><h3>@{{participant}}</h3></li>
-
-        {% endfor %}
+        <div class="card">
+            <h3 style="margin-bottom: 1rem;">Participants</h3>
+            <ul class="participant-list">
+                {% for participant in participants %}
+                <li>
+                    <a href="{% url 'user-profile' participant.id %}">
+                        <span style="font-weight: 500;">@{{participant.username}}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
-{% endif %}
+
 {% endblock %}

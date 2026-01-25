@@ -2,24 +2,377 @@
 {% load static %}
 
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>StudBud</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-    </head>
-    <body>
-        {% include 'navbar.html' %}
-        {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {% block content %}
-            
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudBud</title>
+    
+    <style>
+        /* --- 1. Variables & Clean Palette --- */
+        :root {
+            --bg-color: #f9fafb;       /* Very light grey for reduced eye strain */
+            --card-bg: #ffffff;        /* Pure white for content areas */
+            --text-main: #111827;      /* Soft black */
+            --text-muted: #6b7280;     /* Muted grey */
+            --accent: #2563eb;         /* Professional Blue */
+            --border: #e5e7eb;         /* Subtle borders */
+            --radius: 8px;             /* Soft rounded corners */
+            --ease: cubic-bezier(0.16, 1, 0.3, 1); /* Smooth "Apple-like" easing */
+        }
 
-    </body>
+        /* --- 2. Base Reset & Typography --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--accent);
+        }
+
+        /* --- 3. Layout Wrapper --- */
+        /* This centers your content and adds the animation */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            
+            /* Entry Animation */
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeInUp 0.8s var(--ease) forwards;
+        }
+
+        /* --- 4. Component: Messages --- */
+        .messages {
+            list-style: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 1rem auto 0;
+            padding: 0 1.5rem;
+        }
+
+        .messages li {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            
+            /* Slide down animation for alerts */
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: slideDown 0.5s var(--ease) forwards;
+        }
+
+        /* --- 5. Animations --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- 6. Utility Classes (Optional but helpful) --- */
+        /* Use <div class="card"> around content if you want a white box */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        /* --- Add to main.html <style> --- */
+
+        /* --- Navbar Styling --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            /* 1. Constraint the width to match your content */
+            width: 100%;
+            max-width: 1200px; 
+            
+            /* 2. Center the navbar itself */
+            margin: 0 auto 2rem auto; 
+            
+            /* 3. Add padding so it aligns with the text below */
+            padding: 1rem 1.5rem;
+            
+            /* Optional: Keep the border inside the alignment */
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .search-bar input {
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-color);
+            width: 300px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-weight: 500;
+        }
+
+        /* Home Grid Layout */
+        .home-container {
+            display: grid;
+            /* Left sidebar 1 part, Center feed 3 parts, Right sidebar 1 part */
+            grid-template-columns: 1fr 3fr 1fr; 
+            gap: 3rem; /* Increased gap for better breathing room */
+            align-items: start;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: var(--text-main);
+            color: #fff;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--text-main);
+            color: var(--text-main);
+        }
+
+        .btn-danger {
+            background: #ef4444; /* Red for delete */
+            color: white;
+        }
+
+        /* Typography Utilities */
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .topic-tag {
+            background: var(--bg-color);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        /* --- Add this to main.html <style> block --- */
+
+        /* 1. Global Form Styling */
+        /* This makes {{form.as_p}} and manual inputs look good automatically */
+        form p { margin-bottom: 1rem; }
+
+        form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="email"],
+        form textarea, 
+        form select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--bg-color);
+            font-family: inherit;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        form input:focus, form textarea:focus, form select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* 2. Profile Grid Layout */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            gap: 2rem;
+        }
+
+        /* 3. Activity Component Styling */
+        .activity-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        /* --- Add this to main.html <style> block --- */
+
+        /* Topics Sidebar */
+        .topics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .topic-list a {
+            display: block;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .topic-list a:hover, .topic-list a.active {
+            background: #eef2ff; /* Light blue background */
+            color: var(--accent);
+        }
+
+        .topic-count {
+            background: var(--bg-color);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            float: right;
+        }
+
+        /* Room & Chat Layout */
+        .room-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+        }
+
+        .comment-wrapper {
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            max-height: 600px;
+            overflow-y: auto; /* Scrollable chat */
+        }
+
+        .message-bubble {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Participants Sidebar */
+        .participant-list li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.8rem;
+            padding: 8px;
+            border-radius: var(--radius);
+        }
+
+        .participant-list li:hover {
+            background: var(--bg-color);
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
 </html>

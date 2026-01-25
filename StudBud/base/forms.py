@@ -15,5 +15,5 @@ class TopicForm(ModelForm):
 class UserCreationForm(ModelForm):
     class Meta:
         model = User
-        fields = ['name', 'email', 'bio', 'avatar', 'password', 'username']
+        fields = ['name', 'email', 'bio', 'password', 'username']
         

@@ -2,12 +2,24 @@
 
 {% block content %}
 
-<div>
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+<div style="display: flex; justify-content: center; padding-top: 2rem;">
+    <div class="card" style="width: 100%; max-width: 600px;">
+        
+        <div style="margin-bottom: 2rem;">
+            <a href="{{request.META.HTTP_REFERER}}" style="color: var(--text-muted); font-size: 0.9rem;">&larr; Go Back</a>
+            <h2 style="margin-top: 10px;">Create Room</h2>
+        </div>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <div style="margin-top: 2rem; display: flex; gap: 10px;">
+                <a href="{{request.META.HTTP_REFERER}}" class="btn btn-outline">Cancel</a>
+                <input type="submit" value="Submit" class="btn" />
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock content %}

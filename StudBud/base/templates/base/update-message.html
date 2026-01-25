@@ -1,22 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudBud</title>
-</head>
-<body>
-</body>
-    {% include 'main.html' %}
-    {% block content %}
-    <div>
-        <h2>Update Message</h2>
-        <form method = "POST" action="">
+{% extends 'main.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 50vh;">
+    <div class="card" style="width: 100%; max-width: 500px;">
+        <h2 style="margin-bottom: 1.5rem;">Update Message</h2>
+        
+        <form method="POST" action="">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="text" name="body" placeholder="message" value="{{obj.body}}" />
-            <input type="submit" value="Update Message" />
+            <textarea name="body" rows="4" placeholder="Type your message...">{{obj.body}}</textarea>
+            
+            <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                <a href="{{request.META.HTTP_REFERER}}" class="btn btn-outline">Cancel</a>
+                <input type="submit" value="Update" class="btn" />
+            </div>
         </form>
     </div>
-    {% endblock %}
-</html>
+</div>
+{% endblock %}
