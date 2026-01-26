@@ -42,20 +42,7 @@
         {% endif %}
     </div>
 
-    <div>
-        <div class="card">
-            <h3 style="margin-bottom: 1rem;">Participants</h3>
-            <ul class="participant-list">
-                {% for participant in participants %}
-                <li>
-                    <a href="{% url 'user-profile' participant.id %}">
-                        <span style="font-weight: 500;">@{{participant.username}}</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+    
 </div>
 
 {% endblock %}
